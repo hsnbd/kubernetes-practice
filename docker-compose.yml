@@ -1,0 +1,33 @@
+services:
+  postgresql:
+    image: docker.io/bitnami/postgresql:17
+    ports:
+      - '5432:5432'
+    volumes:
+      - 'postgresql_data:/bitnami/postgresql'
+      - './apps/databases/postgresql/init:/docker-entrypoint-initdb.d'
+    environment:
+      - POSTGRESQL_USERNAME=admin
+      - POSTGRESQL_PASSWORD=password
+      - POSTGRESQL_DATABASE=postgres
+      - POSTGRESQL_POSTGRES_PASSWORD=password
+  user-service:
+    build: 
+      context: ./apps/user-service
+      dockerfile: Dockerfile
+    container_name: user_service_api
+    environment:
+      - DB_HOST=postgresql
+      - DB_USER=admin
+      - DB_PASSWORD=password
+      - DB_NAME=postgres
+      - DB_PORT=5432
+      - JWT_SECRET=your-super-secret-key-change-this-in-production
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgresql
+
+volumes:
+  postgresql_data:
+    driver: local
