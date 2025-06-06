@@ -1,0 +1,36 @@
+{
+  "folders": [
+    {
+      "name": "root",
+      "path": "."
+    },
+    {
+      "name": "frontend",
+      "path": "apps/frontend"
+    },
+    {
+      "name": "order-service",
+      "path": "apps/order-service"
+    },
+    {
+      "name": "user-service",
+      "path": "apps/user-service"
+    },
+    {
+      "name": "product-service",
+      "path": "apps/product-service"
+    },
+  ],
+  "settings": {
+    "typescript.enablePromptUseWorkspaceTsdk": true,
+    "typescript.tsdk": "root/node_modules/typescript/lib",
+    "jestrunner.jestCommand": "npm run test",
+    "jestrunner.jestPath": "",
+    "eslint.workingDirectories": [
+      "apps/frontend",
+      "apps/order-service",
+      "apps/user-service",
+      "apps/product-service"
+    ],
+  }
+}
