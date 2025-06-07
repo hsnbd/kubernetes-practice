@@ -20,6 +20,14 @@
       "name": "product-service",
       "path": "apps/product-service"
     },
+    {
+      "name": "notification-service",
+      "path": "apps/notification-service"
+    },
+    {
+      "name": "analytics-service",
+      "path": "apps/analytics-service"
+    }
   ],
   "settings": {
     "typescript.enablePromptUseWorkspaceTsdk": true,
