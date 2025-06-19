@@ -5,6 +5,9 @@ import { IoPerson } from "react-icons/io5";
 import { FaTruckFast } from "react-icons/fa6";
 import { FaPhoneSquareAlt } from "react-icons/fa";
 import { IoArrowUndoCircleSharp } from "react-icons/io5";
+import { GoHeartFill } from "react-icons/go";
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
 
 export default function Home() {
   return (
@@ -79,7 +82,7 @@ export default function Home() {
       </header>
 
       {/* main */}
-      <main className="flex-1/3">
+      <main className="min-h-[1000px] flex-1/3">
         {/* feature overview */}
         <div className="mt-10 flex h-full w-full items-center justify-center gap-10">
           {/* fast delivery */}
@@ -103,6 +106,49 @@ export default function Home() {
               Garantía de devolución
             </p>
           </div>
+        </div>
+
+        {/* products listings */}
+        <div className="mx-auto mt-15 grid grid-cols-4 gap-6 px-12">
+          {/* product */}
+          {Array.from({ length: 12 }).map((_, index) => (
+            <div
+              key={index}
+              className="flex h-85 w-64 flex-col items-center justify-center gap-2 bg-gray-100"
+            >
+              <div className="h-[60%]">
+                <Image
+                  width={200}
+                  height={200}
+                  src="/images/Product_Laptop.webp"
+                  alt="Product Laptop"
+                  className="w-full"
+                />
+              </div>
+              <div className="flex h-[40%] w-full flex-col items-center justify-start gap-1">
+                <h1 className="font-montserrat text-center text-lg font-bold">
+                  Nombre Producto
+                </h1>
+                <p className="font-montserrat text-center text-sm font-bold text-gray-400">
+                  Descripción Producto
+                </p>
+
+                <div className="mt-auto flex items-center justify-between gap-3 pb-2">
+                  <p className="font-montserrat text-sm font-bold">13$</p>
+                  <Button
+                    size="xs"
+                    variant="default"
+                    className="cursor-pointer bg-emerald-600 font-bold text-white shadow-lg hover:bg-emerald-700"
+                  >
+                    Agregar al carrito
+                  </Button>
+                  <div className="rounded-full bg-white p-[5px]">
+                    <GoHeartFill size={15} color="black" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       </main>
       {/* footer */}
