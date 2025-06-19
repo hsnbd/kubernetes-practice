@@ -13,78 +13,82 @@ export default function Home() {
   return (
     <div className="flex min-h-screen flex-col">
       <header className="flex h-[80vh] justify-between">
-        <div className="h-full w-full bg-[url('/images/HeroImage.jpg')] bg-cover bg-center bg-no-repeat shadow-xl">
+        <section className="h-full w-full bg-[url('/images/HeroImage.jpg')] bg-cover bg-center bg-no-repeat shadow-xl">
           {/* top header */}
-          <div className="flex h-8 w-full items-center justify-center bg-gray-300">
+          <section className="flex h-8 w-full items-center justify-center bg-gray-300">
             <h1 className="font-montserrat text-2xl text-gray-400">
               Entregas a domicilio gratis
             </h1>
-          </div>
-
+          </section>
           {/* top header left links */}
-          <div className="flex w-full items-center justify-end gap-6 px-12 pt-2">
-            <div className="flex gap-6 text-2xl text-gray-300 transition-all">
+          <section className="flex w-full items-center justify-end gap-6 px-12 pt-2">
+            <section className="flex gap-6 text-2xl text-white transition-all">
               <Link
                 href="#"
-                className="text-2xl text-gray-200 transition-all hover:underline hover:underline-offset-4"
+                className="text-2xl text-white transition-all hover:underline hover:underline-offset-4"
               >
-                link1
+                Plantasy
               </Link>
               <Link
                 href="#"
-                className="text-2xl text-gray-200 transition-all hover:underline hover:underline-offset-4"
+                className="text-2xl text-white transition-all hover:underline hover:underline-offset-4"
               >
-                link2
+                Semillas
               </Link>
               <Link
                 href="#"
-                className="text-2xl text-gray-200 transition-all hover:underline hover:underline-offset-4"
+                className="text-2xl text-white transition-all hover:underline hover:underline-offset-4"
               >
-                link3
+                Macetas
               </Link>
               <Link
                 href="#"
-                className="text-2xl text-gray-200 transition-all hover:underline hover:underline-offset-4"
+                className="text-2xl text-white transition-all hover:underline hover:underline-offset-4"
               >
-                link4
+                Accesorios
               </Link>
               <Link
                 href="#"
-                className="text-2xl text-gray-200 transition-all hover:underline hover:underline-offset-4"
+                className="text-2xl text-white transition-all hover:underline hover:underline-offset-4"
               >
-                link5
+                Blog
               </Link>
-            </div>
+              <Link
+                href="#"
+                className="text-2xl text-white transition-all hover:underline hover:underline-offset-4"
+              >
+                Contacto
+              </Link>
+            </section>
 
             {/* top right links */}
-            <div className="flex items-center justify-end gap-2">
+            <section className="flex items-center justify-end gap-2">
               <RiSearch2Fill size={25} color="white" />
               <IoPerson size={25} color="white" />
               <FaShoppingCart size={25} color="white" />
-            </div>
-          </div>
-
+            </section>
+          </section>
           {/* hero image text */}
-          <div className="flex h-full w-full flex-col items-center justify-center">
-            <h1 className="font-montserrat text-7xl text-white uppercase">
+          <section className="flex h-full w-full flex-col items-center justify-center">
+            <h1 className="font-montserrat text-7xl font-extrabold text-white uppercase">
               Green Land
             </h1>
 
-            <h2 className="font-montserrat mt-10 text-3xl text-white uppercase">
+            <h2 className="font-montserrat mt-10 text-3xl font-bold text-white uppercase">
               El planeta de las plantas
             </h2>
 
             <h3 className="font-montserrat mt-3 text-xl text-white uppercase">
-              Descubre la belleza de la naturaleza
+              De nuestra tierra hasta tu hogar
             </h3>
-          </div>
-        </div>
+          </section>
+        </section>
       </header>
 
       {/* main */}
       <main className="min-h-[1000px] flex-1/3">
         {/* feature overview */}
-        <div className="mt-10 flex h-full w-full items-center justify-center gap-10">
+        <section className="mt-10 flex h-full w-full items-center justify-center gap-10">
           {/* fast delivery */}
           <div className="flex h-full w-96 items-center justify-center bg-gray-200 px-4 py-3 shadow-xl">
             <FaTruckFast size={30} />
@@ -106,10 +110,10 @@ export default function Home() {
               Garantía de devolución
             </p>
           </div>
-        </div>
+        </section>
 
         {/* products listings */}
-        <div className="mx-auto mt-15 grid grid-cols-4 gap-6 px-12">
+        <section className="mx-auto mt-15 grid grid-cols-4 gap-6 px-12">
           {/* product */}
           {Array.from({ length: 12 }).map((_, index) => (
             <div
@@ -125,7 +129,7 @@ export default function Home() {
                   className="w-full"
                 />
               </div>
-              <div className="flex h-[40%] w-full flex-col items-center justify-start gap-1">
+              <section className="flex h-[40%] w-full flex-col items-center justify-start gap-1">
                 <h1 className="font-montserrat text-center text-lg font-bold">
                   Nombre Producto
                 </h1>
@@ -146,10 +150,10 @@ export default function Home() {
                     <GoHeartFill size={15} color="black" />
                   </div>
                 </div>
-              </div>
+              </section>
             </div>
           ))}
-        </div>
+        </section>
       </main>
       {/* footer */}
       <footer className="flex h-[10vh] justify-between">footer</footer>
