@@ -1,0 +1,21 @@
+{
+  "folders": [
+    {
+      "name": "frontend",
+      "path": "apps/frontend"
+    },
+    {
+      "name": "order-service",
+      "path": "apps/order-service"
+    },
+    {
+      "name": "product-service",
+      "path": "apps/product-service"
+    },
+    {
+      "name": "user-service",
+      "path": "apps/user-service"
+    }
+  ],
+  "settings": {}
+}
