@@ -1,53 +1,44 @@
-# Use the official PHP image with Apache
-FROM php:8.3-apache
+# Build stage
+FROM node:20-alpine AS build
 
-# Set working directory
-WORKDIR /var/www/html
+WORKDIR /app
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    git \
-    curl \
-    libpng-dev \
-    libonig-dev \
-    libxml2-dev \
-    zip \
-    unzip \
-    libpq-dev \
-    && docker-php-ext-install pdo pdo_pgsql mbstring exif pcntl bcmath gd
+# Copy package files
+COPY package*.json ./
 
-# Install Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+# Install dependencies
+RUN npm ci
 
-# Copy existing application directory contents
-COPY . /var/www/html
+# Copy source code
+COPY . .
 
-# Copy existing application directory permissions
-COPY --chown=www-data:www-data . /var/www/html
+# Build the application
+RUN npm run build
 
-# Install PHP dependencies
-RUN composer install --no-dev --optimize-autoloader
+# Production stage
+FROM node:20-alpine AS production
 
-# Set up Laravel environment
-RUN cp .env.example .env || true
+WORKDIR /app
 
-# Generate application key (if not set)
-RUN php artisan key:generate || true
+# Copy package files
+COPY package*.json ./
 
-# Enable Apache mod_rewrite
-RUN a2enmod rewrite
+# Install only production dependencies
+RUN npm ci --only=production && npm cache clean --force
 
-# Update Apache configuration to point to Laravel's public directory
-RUN sed -i 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available/000-default.conf
+# Copy built application from build stage
+COPY --from=build /app/dist ./dist
 
-# Set permissions
-RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html \
-    && chmod -R 775 /var/www/html/storage \
-    && chmod -R 775 /var/www/html/bootstrap/cache
+# Create non-root user
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S nestjs -u 1001
 
-# Expose port 80
-EXPOSE 80
+# Change ownership of the app directory
+RUN chown -R nestjs:nodejs /app
+USER nestjs
 
-# Start Apache
-CMD ["apache2-foreground"]
+# Expose port
+EXPOSE 3000
+
+# Start the application
+CMD ["node", "dist/main"]
