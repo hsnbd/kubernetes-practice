@@ -1,5 +1,9 @@
 {
   "folders": [
+		{
+			"name": "root",
+			"path": "./"
+		},
     {
       "name": "frontend",
       "path": "apps/frontend"

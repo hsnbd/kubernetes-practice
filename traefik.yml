@@ -1,0 +1,31 @@
+# Traefik static configuration
+# Enable the API and Dashboard
+api:
+  dashboard: true
+  insecure: true
+
+# Configure entrypoints
+entryPoints:
+  web:
+    address: ":80"
+  websecure:
+    address: ":443"
+
+# Configure providers
+providers:
+  docker:
+    endpoint: "unix:///var/run/docker.sock"
+    exposedByDefault: false
+    network: traefik
+
+# Configure logging
+log:
+  level: INFO
+
+accessLog: {}
+
+# Configure metrics (optional)
+metrics:
+  prometheus:
+    addEntryPointsLabels: true
+    addServicesLabels: true
