@@ -3,7 +3,12 @@
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    // return view('welcome');
+    return response()->json([
+        'status' => 'ok',
+        'service' => 'product-service',
+        'timestamp' => now()->toISOString()
+    ]);
 });
 
 // Health check route for microservice

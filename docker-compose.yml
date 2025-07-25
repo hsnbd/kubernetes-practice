@@ -16,7 +16,7 @@ services:
       - traefik
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.dashboard.rule=Host(`kube.ecom.local`)"
+      - "traefik.http.routers.dashboard.rule=Host(`kube.ecom.local`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))"
       - "traefik.http.routers.dashboard.service=api@internal"
 
   postgresql:
@@ -40,13 +40,23 @@ services:
       context: ./apps/frontend
       dockerfile: Dockerfile
     container_name: frontend
+    working_dir: /app
+    command: npm run dev
+    develop:
+      watch:
+        - path: ./apps/.next
+          action: sync
+          target: /app/.next
+          ignore:
+            - node_modules
+        
     environment:
       - NODE_ENV=production
     networks:
       - traefik
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.frontend.rule=Host(`kube.ecom.local`)"
+      - "traefik.http.routers.frontend.rule=Host(`kube.ecom.local`) && PathPrefix(`/`)"
       - "traefik.http.routers.frontend.entrypoints=web"
       - "traefik.http.services.frontend.loadbalancer.server.port=3000"
     depends_on:
@@ -68,10 +78,10 @@ services:
       - traefik
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.user-service.rule=Host(`kube.ecom.local`) && PathPrefix(`/api/users`)"
+      - "traefik.http.routers.user-service.rule=Host(`kube.ecom.local`) && PathPrefix(`/services/users`)"
       - "traefik.http.routers.user-service.entrypoints=web"
       - "traefik.http.routers.user-service.middlewares=user-service-stripprefix"
-      - "traefik.http.middlewares.user-service-stripprefix.stripprefix.prefixes=/api/users"
+      - "traefik.http.middlewares.user-service-stripprefix.stripprefix.prefixes=/services/users"
       - "traefik.http.services.user-service.loadbalancer.server.port=8080"
     depends_on:
       - postgresql
@@ -89,10 +99,10 @@ services:
       - traefik
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.order-service.rule=Host(`kube.ecom.local`) && PathPrefix(`/api/orders`)"
+      - "traefik.http.routers.order-service.rule=Host(`kube.ecom.local`) && PathPrefix(`/services/orders`)"
       - "traefik.http.routers.order-service.entrypoints=web"
       - "traefik.http.routers.order-service.middlewares=order-service-stripprefix"
-      - "traefik.http.middlewares.order-service-stripprefix.stripprefix.prefixes=/api/orders"
+      - "traefik.http.middlewares.order-service-stripprefix.stripprefix.prefixes=/services/orders"
       - "traefik.http.services.order-service.loadbalancer.server.port=3000"
     depends_on:
       - traefik
@@ -118,10 +128,10 @@ services:
       - traefik
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.product-service.rule=Host(`kube.ecom.local`) && PathPrefix(`/api/products`)"
+      - "traefik.http.routers.product-service.rule=Host(`kube.ecom.local`) && PathPrefix(`/services/products`)"
       - "traefik.http.routers.product-service.entrypoints=web"
-      - "traefik.http.routers.product-service.middlewares=product-service-stripprefix"
-      - "traefik.http.middlewares.product-service-stripprefix.stripprefix.prefixes=/api/products"
+      - "traefik.http.routers.product-service.middlewares=strip-products"
+      - "traefik.http.middlewares.strip-products.stripPrefix.prefixes=/services/products"
       - "traefik.http.services.product-service.loadbalancer.server.port=80"
     depends_on:
       - postgresql
@@ -139,10 +149,10 @@ services:
       - traefik
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.notification-service.rule=Host(`kube.ecom.local`) && PathPrefix(`/api/notifications`)"
+      - "traefik.http.routers.notification-service.rule=Host(`kube.ecom.local`) && PathPrefix(`/services/notifications`)"
       - "traefik.http.routers.notification-service.entrypoints=web"
       - "traefik.http.routers.notification-service.middlewares=notification-service-stripprefix"
-      - "traefik.http.middlewares.notification-service-stripprefix.stripprefix.prefixes=/api/notifications"
+      - "traefik.http.middlewares.notification-service-stripprefix.stripprefix.prefixes=/services/notifications"
       - "traefik.http.services.notification-service.loadbalancer.server.port=3000"
     depends_on:
       - traefik
@@ -160,10 +170,10 @@ services:
       - traefik
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.analytics-service.rule=Host(`kube.ecom.local`) && PathPrefix(`/api/analytics`)"
+      - "traefik.http.routers.analytics-service.rule=Host(`kube.ecom.local`) && PathPrefix(`/services/analytics`)"
       - "traefik.http.routers.analytics-service.entrypoints=web"
       - "traefik.http.routers.analytics-service.middlewares=analytics-service-stripprefix"
-      - "traefik.http.middlewares.analytics-service-stripprefix.stripprefix.prefixes=/api/analytics"
+      - "traefik.http.middlewares.analytics-service-stripprefix.stripprefix.prefixes=/services/analytics"
       - "traefik.http.services.analytics-service.loadbalancer.server.port=8000"
     depends_on:
       - postgresql
