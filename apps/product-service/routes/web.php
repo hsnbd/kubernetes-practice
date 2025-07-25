@@ -15,21 +15,6 @@ Route::get('/health', function () {
     ]);
 });
 
-// Health check with parameter
-Route::get('/health/{param}', function ($param) {
-    return response()->json([
-        'status' => 'ok',
-        'service' => 'product-service',
-        'param' => $param,
-        'timestamp' => now()->toISOString()
-    ]);
-});
-
-// Simple test route
-Route::get('/test', function () {
-    return response()->json(['message' => 'Test route works']);
-});
-
 // Temporary API routes for testing
 Route::prefix('api')->group(function () {
     Route::prefix('products')->group(function () {
