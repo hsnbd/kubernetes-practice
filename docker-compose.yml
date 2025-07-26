@@ -41,15 +41,17 @@ services:
       dockerfile: Dockerfile
     container_name: frontend
     working_dir: /app
+    volumes:
+      - ./apps/frontend:/app
+      - /app/node_modules
     command: npm run dev
     develop:
       watch:
-        - path: ./apps/.next
-          action: sync
+        - action: sync
+          path: ./apps/.next
           target: /app/.next
           ignore:
             - node_modules
-        
     environment:
       - NODE_ENV=production
     networks:
