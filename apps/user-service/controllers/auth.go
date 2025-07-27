@@ -26,7 +26,7 @@ func Register(c *gin.Context) {
 	}
 
 	user := models.User{
-		Username: input.Username,
+		Name:     input.Name,
 		Email:    input.Email,
 		Password: string(hashedPassword),
 	}
@@ -34,7 +34,7 @@ func Register(c *gin.Context) {
 	// Create user in database
 	result := config.DB.Create(&user)
 	if result.Error != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "User already exists"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "User already exists or validation failed"})
 		return
 	}
 
@@ -48,9 +48,9 @@ func Register(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{
 		"message": "Registration successful",
 		"user": gin.H{
-			"id":       user.ID,
-			"username": user.Username,
-			"email":    user.Email,
+			"id":    user.ID,
+			"name":  user.Name,
+			"email": user.Email,
 		},
 		"token": token,
 	})
@@ -86,10 +86,33 @@ func Login(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Login successful",
 		"user": gin.H{
-			"id":       user.ID,
-			"username": user.Username,
-			"email":    user.Email,
+			"id":    user.ID,
+			"name":  user.Name,
+			"email": user.Email,
 		},
 		"token": token,
+	})
+}
+
+func GetUserProfile(c *gin.Context) {
+	userId, exists := c.Get("userId")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
+		return
+	}
+
+	var user models.User
+	if err := config.DB.First(&user, userId).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"user": gin.H{
+			"id":        user.ID,
+			"name":      user.Name,
+			"email":     user.Email,
+			"createdAt": user.CreatedAt,
+		},
 	})
 }

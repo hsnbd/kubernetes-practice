@@ -1,20 +1,23 @@
 package models
 
-import (
-	"gorm.io/gorm"
-)
+import "time"
 
 type User struct {
-	gorm.Model
-	Username string `json:"username" gorm:"unique"`
-	Email    string `json:"email" gorm:"unique"`
-	Password string `json:"password"`
+	ID                uint      `json:"id" gorm:"primaryKey;autoIncrement"`
+	Name              string    `json:"name" gorm:"not null"`
+	Email             string    `json:"email" gorm:"unique;not null"`
+	EmailVerifiedAt   *time.Time `json:"email_verified_at"` // nullable
+	Password          string    `json:"password" gorm:"not null"`
+	RememberToken     *string   `json:"remember_token"` // nullable, 100-char token
+	CreatedAt         time.Time `json:"created_at"`
+	UpdatedAt         time.Time `json:"updated_at"`
 }
 
 type RegisterInput struct {
-	Username string `json:"username" binding:"required"`
+	Name     string `json:"name" binding:"required"`
 	Email    string `json:"email" binding:"required,email"`
-	Password string `json:"password" binding:"required,min=6"`
+	Password string `json:"password" binding:"required,min=8"`
+	SubscribeNewsletter bool `json:"subscribeNewsletter"`
 }
 
 type LoginInput struct {
