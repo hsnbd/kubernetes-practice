@@ -39,21 +39,25 @@ services:
     build: 
       context: ./apps/frontend
       dockerfile: Dockerfile
+      target: development
     container_name: frontend
     working_dir: /app
     volumes:
       - ./apps/frontend:/app
       - /app/node_modules
-    command: npm run dev
+      - /app/.next
     develop:
       watch:
         - action: sync
-          path: ./apps/.next
-          target: /app/.next
+          path: ./apps/frontend
+          target: /app
           ignore:
             - node_modules
+            - .next
+        - action: rebuild
+          path: ./apps/frontend/package.json
     environment:
-      - NODE_ENV=production
+      - NODE_ENV=development
     networks:
       - traefik
     labels:
@@ -68,7 +72,20 @@ services:
     build: 
       context: ./apps/user-service
       dockerfile: Dockerfile
+      target: development  
     container_name: user_service_api
+    working_dir: /app
+    volumes:
+      - ./apps/user-service:/app
+    develop:
+      watch:
+        - action: sync
+          path: ./apps/user-service
+          target: /app
+          ignore:
+            - tmp
+        - action: rebuild
+          path: ./apps/user-service/go.mod
     environment:
       - DB_HOST=postgresql
       - DB_USER=admin
@@ -94,9 +111,25 @@ services:
     build:
       context: ./apps/order-service
       dockerfile: Dockerfile
+      target: development
     container_name: order_service_api
+    working_dir: /app
+    volumes:
+      - ./apps/order-service:/app
+      - /app/node_modules
+      - /app/dist
+    develop:
+      watch:
+        - action: sync
+          path: ./apps/order-service/src
+          target: /app/src
+          ignore:
+            - node_modules
+            - dist
+        - action: rebuild
+          path: ./apps/order-service/package.json
     environment:
-      - NODE_ENV=production
+      - NODE_ENV=development
       - DB_HOST=postgresql
       - DB_USERNAME=admin
       - DB_PASSWORD=password
@@ -120,12 +153,26 @@ services:
     build:
       context: ./apps/product-service
       dockerfile: Dockerfile
+      target: development
     working_dir: /var/www/html
     volumes:
       - ./apps/product-service:/var/www/html
+      - /var/www/html/vendor
     container_name: product_service_api
+    develop:
+      watch:
+        - action: sync
+          path: ./apps/product-service
+          target: /var/www/html
+          ignore:
+            - vendor
+            - storage/logs
+            - storage/framework
+        - action: rebuild
+          path: ./apps/product-service/composer.json
     environment:
-      - APP_ENV=production
+      - APP_ENV=local
+      - APP_DEBUG=true
       - DB_CONNECTION=pgsql
       - DB_HOST=postgresql
       - DB_PORT=5432
@@ -150,9 +197,23 @@ services:
     build:
       context: ./apps/notification-service
       dockerfile: Dockerfile
+      target: development
     container_name: notification_service_api
+    working_dir: /app
+    volumes:
+      - ./apps/notification-service:/app
+      - /app/node_modules
+    develop:
+      watch:
+        - action: sync
+          path: ./apps/notification-service
+          target: /app
+          ignore:
+            - node_modules
+        - action: rebuild
+          path: ./apps/notification-service/package.json
     environment:
-      - NODE_ENV=production
+      - NODE_ENV=development
     networks:
       - traefik
     labels:
@@ -170,7 +231,18 @@ services:
     build:
       context: ./apps/analytics-service
       dockerfile: Dockerfile
+      target: development
     container_name: analytics_service_api
+    working_dir: /app
+    volumes:
+      - ./apps/analytics-service:/app
+    develop:
+      watch:
+        - action: sync
+          path: ./apps/analytics-service/app
+          target: /app/app
+        - action: rebuild
+          path: ./apps/analytics-service/requirements.txt
     environment:
       - PYTHONPATH=/app
       - DATABASE_URL=postgresql://admin:password@postgresql:5432/postgres
