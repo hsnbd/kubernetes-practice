@@ -7,6 +7,7 @@ import TodoItem from './TodoItem';
 import TodoForm from './TodoForm';
 import CategoryManager from './CategoryManager';
 import TagManager from './TagManager';
+import AdSidebar from './AdSidebar';
 
 export default function TodoList() {
   const navigate = useNavigate();
@@ -82,43 +83,55 @@ export default function TodoList() {
 
       {/* Main content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-4 flex gap-2">
-          <button
-            onClick={() => setIsFormOpen(true)}
-            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700"
-          >
-            <PlusIcon className="h-5 w-5 mr-2" />
-            New Todo
-          </button>
-          <button
-            onClick={() => setIsCategoryManagerOpen(true)}
-            className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50"
-          >
-            <FolderIcon className="h-5 w-5 mr-2" />
-            Categories
-          </button>
-          <button
-            onClick={() => setIsTagManagerOpen(true)}
-            className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50"
-          >
-            <TagIcon className="h-5 w-5 mr-2" />
-            Tags
-          </button>
-        </div>
-
-        {/* Todos list */}
-        <div className="bg-white shadow overflow-hidden sm:rounded-md">
-          {!todos || todos.length === 0 ? (
-            <div className="text-center py-12">
-              <p className="text-gray-500">No todos yet. Create your first one!</p>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Left column: Todos */}
+          <div className="lg:col-span-2">
+            <div className="mb-4 flex gap-2">
+              <button
+                onClick={() => setIsFormOpen(true)}
+                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700"
+              >
+                <PlusIcon className="h-5 w-5 mr-2" />
+                New Todo
+              </button>
+              <button
+                onClick={() => setIsCategoryManagerOpen(true)}
+                className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50"
+              >
+                <FolderIcon className="h-5 w-5 mr-2" />
+                Categories
+              </button>
+              <button
+                onClick={() => setIsTagManagerOpen(true)}
+                className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50"
+              >
+                <TagIcon className="h-5 w-5 mr-2" />
+                Tags
+              </button>
             </div>
-          ) : (
-            <ul className="divide-y divide-gray-200">
-              {todos.map((todo) => (
-                <TodoItem key={todo.id} todo={todo} onUpdate={loadData} onEdit={handleEdit} />
-              ))}
-            </ul>
-          )}
+
+            {/* Todos list */}
+            <div className="bg-white shadow overflow-hidden sm:rounded-md">
+              {!todos || todos.length === 0 ? (
+                <div className="text-center py-12">
+                  <p className="text-gray-500">No todos yet. Create your first one!</p>
+                </div>
+              ) : (
+                <ul className="divide-y divide-gray-200">
+                  {todos.map((todo) => (
+                    <TodoItem key={todo.id} todo={todo} onUpdate={loadData} onEdit={handleEdit} />
+                  ))}
+                </ul>
+              )}
+            </div>
+          </div>
+
+          {/* Right column: Ad Sidebar */}
+          <div className="lg:col-span-1">
+            <div className="sticky top-8">
+              <AdSidebar />
+            </div>
+          </div>
         </div>
       </div>
 

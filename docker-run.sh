@@ -12,7 +12,7 @@ fi
 
 # Stop and remove existing containers if they exist
 echo "🧹 Cleaning up existing containers..."
-docker rm -f todo-db todo-api todo-web 2>/dev/null || true
+docker rm -f todo-db todo-api todo-web ads-manager 2>/dev/null || true
 
 # Run PostgreSQL database
 echo "🗄️  Starting PostgreSQL database..."
@@ -45,8 +45,24 @@ docker run -d \
 echo "⏳ Waiting for API to be ready..."
 sleep 3
 
-# Run frontend web server
-echo "🌐 Starting frontend web server..."
+# Run ads manager service
+echo "📢 Starting Ads Manager service..."
+docker run -d \
+    --name ads-manager \
+    --network todo-network \
+    -e DATABASE_URL="postgresql://postgres:postgres@todo-db:5432/tododb" \
+    -e JWT_SECRET="my-super-secret-jwt-key-change-in-production" \
+    -e CORS_ORIGINS='["http://localhost:3000"]' \
+    -e LOG_LEVEL="INFO" \
+    -e ANALYSIS_INTERVAL_MINUTES="15" \
+    -p 8081:8081 \
+    ads-manager:latest
+
+echo "⏳ Waiting for Ads Manager to be ready..."
+sleep 3
+
+# Run frontend
+echo "🌐 Starting frontend..."
 docker run -d \
     --name todo-web \
     --network todo-network \
@@ -57,13 +73,15 @@ echo ""
 echo "✅ All services started successfully!"
 echo ""
 echo "📍 Access points:"
-echo "   Frontend:  http://localhost:3000"
-echo "   API:       http://localhost:8080"
-echo "   Database:  (internal only, accessible via Docker network)"
+echo "   Frontend:    http://localhost:3000"
+echo "   API:         http://localhost:8080"
+echo "   Ads Manager: http://localhost:8081"
+echo "   Database:    (internal only, accessible via Docker network)"
 echo ""
 echo "📊 View logs:"
 echo "   docker logs -f todo-db"
 echo "   docker logs -f todo-api"
+echo "   docker logs -f ads-manager"
 echo "   docker logs -f todo-web"
 echo ""
 echo "🛑 Stop all services:"

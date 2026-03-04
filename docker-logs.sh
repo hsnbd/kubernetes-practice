@@ -7,6 +7,7 @@ echo ""
 
 docker logs -f todo-db &
 docker logs -f todo-api &
+docker logs -f ads-manager &
 docker logs -f todo-web &
 
 wait

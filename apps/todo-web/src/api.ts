@@ -58,6 +58,17 @@ export interface Tag {
   created_at: string;
 }
 
+export interface Ad {
+  id: string;
+  title: string;
+  description: string;
+  product_url: string;
+  image_url: string | null;
+  keywords: string[];
+  active: boolean;
+  created_at: string;
+}
+
 export interface Todo {
   id: string;
   user_id: string;
@@ -125,4 +136,12 @@ export const tagsAPI = {
   getAll: () => api.get<Tag[]>('/tags'),
   create: (data: { name: string }) => api.post<Tag>('/tags', data),
   delete: (id: string) => api.delete(`/tags/${id}`),
+};
+
+// Ads API
+export const adsAPI = {
+  getTargeted: () => api.get<{ ads: Ad[] }>('/ads/targeted'),
+  trackImpression: (campaign_id: string, clicked: boolean = false) =>
+    api.post('/ads/impressions', { campaign_id, clicked }),
+  getCampaigns: () => api.get<Ad[]>('/ads/campaigns'),
 };
