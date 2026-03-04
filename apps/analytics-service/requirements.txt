@@ -1,5 +1,0 @@
-fastapi
-uvicorn[standard]
-sqlmodel
-python-dotenv
-pydantic-settings
