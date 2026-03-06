@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todo-api
+  labels:
+    app: todo-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: todo-api
+  template:
+    metadata:
+      labels:
+        app: todo-api
+    spec:
+      containers:
+      - name: todo-api
+        image: todo-api
+        env:
+          - name: DATABASE_URL
+            value: "postgresql://postgres:postgres@todo-pg-db:5432/tododb"
+          - name: JWT_SECRET
+            value: "my-super-secret-jwt-key-change-in-production"
+          - name: CORS_ORIGINS
+            value: "http://localhost:3000,http://localhost:30080"
+          - name: LOG_LEVEL
+            value: "INFO"
+          - name: ANALYSIS_INTERVAL_MINUTES
+            value: "15"
+        ports:
+        - containerPort: 8080
+        resources:
+          limits:
+            cpu: "0.5"
+            memory: "128Mi"
+          requests:
+            cpu: "0.25"
+            memory: "64Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: todo-api
+  labels:
+    app: todo-api
+spec:
+  selector:
+    app: todo-api
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080

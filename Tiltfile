@@ -1,3 +1,5 @@
+allow_k8s_contexts('docker-desktop')
+
 # Build Docker images
 docker_build(
     'todo-db',
@@ -26,14 +28,25 @@ docker_build(
     # ],
 )
 
+docker_build(
+    'ads-manager',
+    'apps/ads-manager-py',
+    dockerfile='apps/ads-manager-py/Dockerfile',
+    # Optional: Enable live_update for faster Python development
+    # live_update=[
+    #     sync('apps/ads-manager-py/app', '/app/app'),
+    # ],
+)
+
 # Load Kubernetes manifests
 # Uncomment and adjust paths once you create your Kubernetes manifests
-# k8s_yaml('kuberaw/deployments/postgres.yaml')
-# k8s_yaml('kuberaw/deployments/todo-api.yaml')
-# k8s_yaml('kuberaw/deployments/todo-web.yaml')
+k8s_yaml('kuberaw/deployments/database-pgsql.yaml')
+k8s_yaml('kuberaw/deployments/todo-api.yaml')
+k8s_yaml('kuberaw/deployments/todo-web.yaml')
+k8s_yaml('kuberaw/deployments/ads-manager-py.yaml')
 # k8s_yaml('kuberaw/deployments/ingress.yaml')
 
 # Port forwards (uncomment once k8s resources are deployed)
 # k8s_resource('postgres', port_forwards='5432:5432')
 # k8s_resource('todo-api', port_forwards='8080:8080')
-# k8s_resource('todo-web', port_forwards='3000:80')
+k8s_resource('frontend', port_forwards='3000:80')
