@@ -1,6 +1,8 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import logging
+from app.database import engine
+from sqlalchemy import text
 
 from app.config import settings
 from app.routes import router as ads_router
@@ -54,6 +56,22 @@ async def shutdown_event():
 async def health_check():
     """Health check endpoint"""
     return {"status": "healthy", "service": "ads-manager"}
+
+
+@app.get("/ready")
+async def readiness_check():
+    """Readiness check endpoint - verifies database connectivity"""
+    try:
+        # Test database connection
+        with engine.connect() as conn:
+            conn.execute(text("SELECT 1"))
+        return {"status": "ready", "database": "connected"}
+    except Exception as e:
+        logger.error(f"Database connection failed: {e}")
+        raise HTTPException(
+            status_code=503,
+            detail={"status": "not ready", "error": "database unavailable"}
+        )
 
 
 @app.get("/")

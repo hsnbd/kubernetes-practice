@@ -39,14 +39,14 @@ docker_build(
 )
 
 # Load Kubernetes manifests
-# Uncomment and adjust paths once you create your Kubernetes manifests
 k8s_yaml('kuberaw/deployments/database-pgsql.yaml')
 k8s_yaml('kuberaw/deployments/todo-api.yaml')
 k8s_yaml('kuberaw/deployments/todo-web.yaml')
 k8s_yaml('kuberaw/deployments/ads-manager-py.yaml')
 # k8s_yaml('kuberaw/deployments/ingress.yaml')
 
-# Port forwards (uncomment once k8s resources are deployed)
-# k8s_resource('postgres', port_forwards='5432:5432')
-# k8s_resource('todo-api', port_forwards='8080:8080')
-k8s_resource('frontend', port_forwards='3000:80')
+# Configure resources with dependencies and port forwards
+k8s_resource('todo-pg-db')
+k8s_resource('todo-api', resource_deps=['todo-pg-db'])
+k8s_resource('ads-manager', resource_deps=['todo-pg-db'])
+k8s_resource('frontend', resource_deps=['todo-pg-db', 'todo-api'], port_forwards='3000:80')

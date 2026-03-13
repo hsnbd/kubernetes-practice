@@ -80,14 +80,30 @@ func main() {
 	}
 	router.Use(cors.New(corsConfig))
 
-	// Health check
-	router.GET("/health", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{"status": "healthy"})
-	})
-
 	// API routes
 	api := router.Group("/api")
 	{
+		// Health check
+		api.GET("/health", func(c *gin.Context) {
+			c.JSON(http.StatusOK, gin.H{"status": "healthy"})
+		})
+
+		// Readiness check - verifies database connectivity
+		api.GET("/ready", func(c *gin.Context) {
+			ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+			defer cancel()
+
+			if err := dbpool.Ping(ctx); err != nil {
+				logger.Error("Database ping failed", zap.Error(err))
+				c.JSON(http.StatusServiceUnavailable, gin.H{
+					"status": "not ready",
+					"error":  "database unavailable",
+				})
+				return
+			}
+			c.JSON(http.StatusOK, gin.H{"status": "ready"})
+		})
+
 		// Auth routes (public)
 		auth := api.Group("/auth")
 		{
